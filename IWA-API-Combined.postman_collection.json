@@ -1,0 +1,450 @@
+{
+	"info": {
+		"_postman_id": "6b0d6f5c-7100-4b89-abc5-ab7130a995fb",
+		"name": "IWA-API-Combined",
+		"description": "An example collection for security testing of IWA (Insecure Web Application) REST API\n\nThis is a combined collection for use with FoD that doesn't depend on environment or authentication collections.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24644723"
+	},
+	"item": [
+		{
+			"name": "Authentication Start",
+			"item": [
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "user1@localhost.com",
+									"type": "string"
+								},
+								{
+									"key": "saveHelperData",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "showPassword",
+									"value": false,
+									"type": "boolean"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{c_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.253.21.11:8080/iwa-1.0-SNAPSHOT/api/v3/site/sign-in",
+							"protocol": "http",
+							"host": [
+								"10",
+								"253",
+								"21",
+								"11"
+							],
+							"port": "8080",
+							"path": [
+								"iwa-1.0-SNAPSHOT",
+								"api",
+								"v3",
+								"site",
+								"sign-in"
+							]
+						},
+						"description": "Sign in to the server, retrieve access token and store in variable \"jwt_token\""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"product\", jsonData.id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://10.253.21.11:8080/iwa-1.0-SNAPSHOT/api/v3/products",
+							"protocol": "http",
+							"host": [
+								"10",
+								"253",
+								"21",
+								"11"
+							],
+							"port": "8080",
+							"path": [
+								"iwa-1.0-SNAPSHOT",
+								"api",
+								"v3",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Updated Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Product id returned\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).exist;\r",
+									"    pm.expect(jsonData.id).equals(pm.collectionVariables.get(\"c_product_id\"))\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v3/products/{{id_product}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"products",
+								"{{id_product}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Get All Messages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v3/messages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "{{base_url}}/api/v3/reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v3/reviews",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v3/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v3/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v3",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{c_jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "c_base_url",
+			"value": "https://iwa.onfortify.com",
+			"type": "string"
+		},
+		{
+			"key": "c_username",
+			"value": "user1@localhost.com",
+			"type": "string"
+		},
+		{
+			"key": "c_password",
+			"value": "password",
+			"type": "string"
+		},
+		{
+			"key": "c_jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "c_product_id",
+			"value": ""
+		}
+	]
+}
